@@ -32,13 +32,13 @@ class DynamicMap:
             self.RADIUS = newRadius
 
     def setVal(self, cc_elem, val):
-        cx_elem, cy_elem = cc_elem[0], cc_elem[1]
+        cx_elem, cy_elem = cc_elem
         if max(abs(cx_elem), abs(cy_elem)) > self.RADIUS:
             self.reshape(max(abs(cx_elem), abs(cy_elem)))
         self.map[self.__c2a(cx_elem), self.__c2a(cy_elem)] = val
 
     def getVal(self, cc_elem):
-        cx_elem, cy_elem = cc_elem[0], cc_elem[1]
+        cx_elem, cy_elem = cc_elem
         if max(abs(cx_elem), abs(cy_elem)) > self.RADIUS:
             self.reshape(max(abs(cx_elem), abs(cy_elem)))
         return self.map[self.__c2a(cx_elem), self.__c2a(cy_elem)]
@@ -61,7 +61,26 @@ class DynamicMap:
                 self.reshape(self.RADIUS+1)
             self.map = np.concatenate((np.empty((2*self.RADIUS+1,1), dtype=str), self.map), axis=1)[:,:-1]
 
-    def mergeMaps(self, received_map, cc): # cc for centered coordinates of the emitting robot
-        
+    def __putMap(self, received_map, cc_x, cc_y):
+        toMerge = np.empty(self.map.shape, dtype=str)
+        toMerge[self.__c2a(cc_x-received_map.RADIUS) : self.__c2a(cc_x+received_map.RADIUS)+1, self.__c2a(cc_y-received_map.RADIUS) : self.__c2a(cc_y+received_map.RADIUS)+1] = received_map.map
+        self.map = self.map+toMerge
+
+
+    def mergeMaps(self, received_map, cc_center): # cc for centered coordinates of the emitting robot
+        cc_x, cc_y = cc_center
+        if (max(abs(cc_x), abs(cc_y))+received_map.RADIUS > self.RADIUS):
+            self.reshape(max(abs(cc_x), abs(cc_y))+received_map.RADIUS)
+        self.__putMap(received_map, cc_x, cc_y)
+
+    '''
+    def mergeMaps(self, received_map, cc_center): # cc for centered coordinates of the emitting robot
+            cc_x, cc_y = cc_center[0],
+            newRadius = max(cc_x,cc_y) + self.RADIUS + received_map.RADIUS
+            self.reshape(newRadius)
+            for i in range(-received_map.RADIUS,received_map.RADIUS):
+                for j in range(-received_map.RADIUS,received_map.RADIUS):
+                    if()
+    '''
 
 print("Hello")

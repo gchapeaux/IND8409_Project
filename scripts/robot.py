@@ -11,6 +11,7 @@ class Robot:
         print("pouet")
 
     def dectect_friend(self):
+        print("pouet")
 
 
 """

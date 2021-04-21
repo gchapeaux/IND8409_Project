@@ -22,4 +22,4 @@ def viz_map(map_mx):
     plt.imshow(indexing(map_mx), cmap=ATLAS_COLORS, norm=ATLAS_NORM)
     plt.show()
 
-print("Hello")
+print("Hello")    
