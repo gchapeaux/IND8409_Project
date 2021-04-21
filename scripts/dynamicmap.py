@@ -61,10 +61,13 @@ class DynamicMap:
                 self.reshape(self.RADIUS+1)
             self.map = np.concatenate((np.empty((2*self.RADIUS+1,1), dtype=str), self.map), axis=1)[:,:-1]
 
+    # The robot trusts its own sensors more than the data received by an other robot
     def __putMap(self, received_map, cc_x, cc_y):
         toMerge = np.empty(self.map.shape, dtype=str)
         toMerge[self.__c2a(cc_x-received_map.RADIUS) : self.__c2a(cc_x+received_map.RADIUS)+1, self.__c2a(cc_y-received_map.RADIUS) : self.__c2a(cc_y+received_map.RADIUS)+1] = received_map.map
-        self.map = self.map+toMerge
+        missmatches = np.count_nonzero((self.map != '') * (toMerge != '') * (self.map != toMerge))
+        self.map = np.where(self.map == '', toMerge, self.map)
+        return missmatches
 
 
     def mergeMaps(self, received_map, cc_center): # cc for centered coordinates of the emitting robot
