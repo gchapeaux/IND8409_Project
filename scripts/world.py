@@ -85,9 +85,16 @@ class World:
 
         self.robots[robot.id].sense_world(sensors)
 
-    def sense2
+    def distManhatan(coords1,coords2):
+        return abs(coords1[0]-coords2[0])+abs(coords1[1]-coords2[1])
 
-    def __communicate(self):
+    def communicate(self):
+        for key1 in self.coords.keys():
+            for key2 in  self.coords.keys():
+                if key1 != key2:
+                    if distManhatan(self.coords[key1],self.coords[key2])<7:
+                        print("MErge ",key1," with ",key2)
+                        self.robots[key1].mergeMaps(self.robots[key2].map,self.coords[key2])
         print("Pouet")
 
     def __visualize(self, axes, radius = 50):
