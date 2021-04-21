@@ -14,7 +14,7 @@ class DynamicMap:
             self.map = np.empty(shape=(3,3), dtype=str)
         else:
             self.map = np.array(array, dtype=str)
-        self.RADIUS = 1
+        self.RADIUS = len(self.map)//2
 
     __c2a = lambda self, rc : rc+self.RADIUS # Centered to absolute coordinate
     __a2c = lambda self, ac : ac-self.RADIUS # Absolute to centered coordinate
@@ -75,19 +75,25 @@ class DynamicMap:
         missmatches = np.count_nonzero((self.map != '') * (toMerge != '') * (self.map != toMerge))
         correctmatches=  np.count_nonzero((self.map != '') * (toMerge != '') * (self.map == toMerge))
         #self.map = np.where(self.map == '', toMerge, self.map)
-        return missmatches,correctmatches,missmatches/(missmatches+correctmatches)
+        if correctmatches>0:
+          return missmatches,correctmatches,missmatches/(missmatches+correctmatches)
+        else:
+          return 0,0,0
 
     def mergeApproximateMaps(self,received_map,cc_x_error,cc_y_error):
-         missmatches,correctmatches, ratio=self.evaluate(received_map,cc_x_error,cc_y_error)
-         for x in [-1,0,1]:
-             for y in [-1,0,1]:
-                 print(ratio)
-                 missmatches2,correctmatches2,ratio2 = self.evaluate(received_map,cc_x_error+x,cc_y_error+y)
-                 if (ratio2>ratio and correctmatches2>correctmatches):
-                     print("recursion")
-                     mergeApproximateMaps(received_map,cc_x_error,cc_y_error)
-                     return True
-        mergeMaps(received_map,cc_x_error,cc_y_error)
+        if (max(abs(cc_x_error), abs(cc_y_error))+1+received_map.RADIUS > self.RADIUS):
+            self.reshape(max(abs(cc_x_error), abs(cc_y_error))+1+received_map.RADIUS)
+        missmatches,correctmatches, ratio=self.evaluate(received_map,cc_x_error,cc_y_error)
+        for x in [-1,0,1]:
+            for y in [-1,0,1]:
+
+                missmatches2,correctmatches2,ratio2 = self.evaluate(received_map,cc_x_error+x,cc_y_error+y)
+                print(ratio,ratio2,x,y)
+                if (ratio2>ratio):
+                   print("recursion")
+                   self.mergeApproximateMaps(received_map,cc_x_error+x,cc_y_error+y)
+                   return True
+        self.mergeMaps(received_map,(cc_x_error,cc_y_error))
 
 
 
