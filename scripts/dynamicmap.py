@@ -96,9 +96,6 @@ class DynamicMap:
                    return True
         self.mergeMaps(received_map,(cc_x_error,cc_y_error))
 
-
-
-
     def mergeMaps(self, received_map, cc_center): # cc for centered coordinates of the emitting robot
         cc_x, cc_y = cc_center
         if (max(abs(cc_x), abs(cc_y))+received_map.RADIUS > self.RADIUS):
