@@ -82,5 +82,5 @@ class DynamicMap:
                 for j in range(-received_map.RADIUS,received_map.RADIUS):
                     if()
     '''
-
+print("test")
 print("Hello")
