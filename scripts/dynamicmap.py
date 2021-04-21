@@ -69,6 +69,28 @@ class DynamicMap:
         self.map = np.where(self.map == '', toMerge, self.map)
         return missmatches
 
+    def evaluate(self, received_map, cc_x, cc_y):
+        toMerge = np.empty(self.map.shape, dtype=str)
+        toMerge[self.__c2a(cc_x-received_map.RADIUS) : self.__c2a(cc_x+received_map.RADIUS)+1, self.__c2a(cc_y-received_map.RADIUS) : self.__c2a(cc_y+received_map.RADIUS)+1] = received_map.map
+        missmatches = np.count_nonzero((self.map != '') * (toMerge != '') * (self.map != toMerge))
+        correctmatches=  np.count_nonzero((self.map != '') * (toMerge != '') * (self.map == toMerge))
+        #self.map = np.where(self.map == '', toMerge, self.map)
+        return missmatches,correctmatches,missmatches/(missmatches+correctmatches)
+
+    def mergeApproximateMaps(self,received_map,cc_x_error,cc_y_error):
+         missmatches,correctmatches, ratio=self.evaluate(received_map,cc_x_error,cc_y_error)
+         for x in [-1,0,1]:
+             for y in [-1,0,1]:
+                 print(ratio)
+                 missmatches2,correctmatches2,ratio2 = self.evaluate(received_map,cc_x_error+x,cc_y_error+y)
+                 if (ratio2>ratio and correctmatches2>correctmatches):
+                     print("recursion")
+                     mergeApproximateMaps(received_map,cc_x_error,cc_y_error)
+                     return True
+        mergeMaps(received_map,cc_x_error,cc_y_error)
+
+
+
 
     def mergeMaps(self, received_map, cc_center): # cc for centered coordinates of the emitting robot
         cc_x, cc_y = cc_center
