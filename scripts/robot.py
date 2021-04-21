@@ -13,10 +13,11 @@ class Robot:
 
     # sensors : (3*3) string array sent by the world
     def sense_world(self, sensors):
-        for x in range(-1,2):
-            for y in range(-1,2):
-                if sensors[x+1,y+1] != '':
-                    self.dynamicMap.setVal((x,y), sensors[x+1,y+1])
+        rad = sensors.shape[0]//2
+        for x in range(sensors.shape[0]):
+            for y in range(sensors.shape[1]):
+                if sensors[x,y] != '':
+                    self.dynamicMap.setVal((x-rad,y-rad), sensors[x,y])
         
 
     def move(self, possible_directions):

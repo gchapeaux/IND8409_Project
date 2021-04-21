@@ -103,6 +103,8 @@ class DynamicMap:
         self.__putMap(received_map, cc_x, cc_y)
 
     def map_extract(self, radius):
+        map_extract = self.map.copy()
+        map_extract[self.__c2a(0), self.__c2a(0)] = 'R'
         if radius >= self.RADIUS:
-            return self.map
-        return self.map[self.__c2a(-radius) : self.__c2a(radius) + 1, self.__c2a(-radius) : self.__c2a(radius) + 1]
+            return map_extract
+        return map_extract[self.__c2a(-radius) : self.__c2a(radius) + 1, self.__c2a(-radius) : self.__c2a(radius) + 1]

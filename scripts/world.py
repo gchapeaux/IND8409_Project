@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scripts.robot import Robot
-from scripts.mapreader import read_map, viz_map, viz_map_subp
+from scripts.mapreader import read_map, viz_map, viz_map_robot
 from scripts.dynamicmap import Dir
 
 class World:
@@ -34,7 +34,8 @@ class World:
     def step(self, axes):
         for robot in self.robots.values():
             self.__moving(robot)
-            #self.__sense(robot)
+            self.__sense2(robot)
+            print(str(robot.id)+" - "+str(self.coords[robot.id]))
         self.__visualize(axes)
 
 
@@ -63,17 +64,13 @@ class World:
         move = self.robots[robot.id].move(possible_directions)
         
         if dir == Dir.NORTH:
-            xa_robot = xa_robot - 1
-            self.coords[robot.id] = (xa_robot, ya_robot)
+            self.coords[robot.id] = (xa_robot - 1, ya_robot)
         elif dir == Dir.EAST:
-            ya_robot = ya_robot + 1
-            self.coords[robot.id] = (xa_robot, ya_robot)
+            self.coords[robot.id] = (xa_robot, ya_robot + 1)
         elif dir == Dir.SOUTH:
-            xa_robot = xa_robot + 1
-            self.coords[robot.id] = (xa_robot, ya_robot)
+            self.coords[robot.id] = (xa_robot + 1, ya_robot)
         elif dir == Dir.WEST:
-            ya_robot = ya_robot - 1
-            self.coords[robot.id] = (xa_robot, ya_robot)
+            self.coords[robot.id] = (xa_robot, ya_robot - 1)
     
     def __sense(self, robot):
         xa_robot, ya_robot = self.coords[robot.id]
@@ -85,20 +82,28 @@ class World:
         
         self.robots[robot.id].sense_world(sensors)
 
-    def sense2
+    def __sense2(self, robot, rad_sensor=5) :
+        xa_robot, ya_robot = self.coords[robot.id]
+        sensors = np.zeros((rad_sensor * 2 + 1,rad_sensor * 2 + 1), dtype=str)
+        for i in range(rad_sensor * 2 + 1):
+                for j in range(rad_sensor * 2 + 1):
+                    if (xa_robot - rad_sensor + i >= 0 and xa_robot - rad_sensor+i < self.worldMap.shape[0] and ya_robot - rad_sensor + j >= 0 and ya_robot-rad_sensor + j < self.worldMap.shape[1]):
+                        sensors[i,j] = self.worldMap[xa_robot - rad_sensor + i, ya_robot - rad_sensor + j]
+        
+        self.robots[robot.id].sense_world(sensors)
     
     def __communicate(self):
         print("Pouet")
 
     def __visualize(self, axes, radius = 50):
         plots = {
-            1 : (0,0),
-            2 : (0,1),
-            3 : (0,2),
-            4 : (1,0),
-            5 : (1,1),
-            6 : (1,2)
+            0 : (0,0),
+            1 : (0,1),
+            2 : (0,2),
+            3 : (1,0),
+            4 : (1,1),
+            5 : (1,2)
         }
         for plot in plots.items():
-            viz_map_subp(self.robots[plot.key()].dynamicMap.map_extract(radius), axes[l][c])
+            viz_map_robot(self.robots[plot[0]], axes[plot[1]], radius)
         plt.draw()
