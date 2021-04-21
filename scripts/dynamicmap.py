@@ -2,10 +2,10 @@ import numpy as np
 from enum import Enum, auto
 
 class Dir(Enum):
-    NORTH = auto()
-    WEST = auto()
-    SOUTH = auto()
-    EAST = auto()
+    NORTH = 0
+    WEST = 1
+    SOUTH = 2
+    EAST = 3
 
 class DynamicMap:
 
@@ -75,26 +75,26 @@ class DynamicMap:
         toMerge[self.__c2a(cc_x-received_map.RADIUS) : self.__c2a(cc_x+received_map.RADIUS)+1, self.__c2a(cc_y-received_map.RADIUS) : self.__c2a(cc_y+received_map.RADIUS)+1] = received_map.map
         missmatches = np.count_nonzero((self.map != '') * (toMerge != '') * (self.map != toMerge))
         correctmatches=  np.count_nonzero((self.map != '') * (toMerge != '') * (self.map == toMerge))
-        #self.map = np.where(self.map == '', toMerge, self.map)
         if correctmatches>0:
           return missmatches,correctmatches,missmatches/(missmatches+correctmatches)
         else:
           return 0,0,0
 
-    def mergeApproximateMaps(self,received_map,cc_x_error,cc_y_error):
-        if (max(abs(cc_x_error), abs(cc_y_error))+1+received_map.RADIUS > self.RADIUS):
-            self.reshape(max(abs(cc_x_error), abs(cc_y_error))+1+received_map.RADIUS)
-        missmatches,correctmatches, ratio=self.evaluate(received_map,cc_x_error,cc_y_error)
+    def mergeApproximateMaps(self, received_map, cc_approx):
+        cc_x_approx,cc_y_approx = cc_approx
+        if (max(abs(cc_x_approx), abs(cc_y_approx))+1+received_map.RADIUS > self.RADIUS):
+            self.reshape(max(abs(cc_x_approx), abs(cc_y_approx))+1+received_map.RADIUS)
+        missmatches,correctmatches, ratio=self.evaluate(received_map,cc_x_approx,cc_y_approx)
         for x in [-1,0,1]:
             for y in [-1,0,1]:
 
-                missmatches2,correctmatches2,ratio2 = self.evaluate(received_map,cc_x_error+x,cc_y_error+y)
+                missmatches2,correctmatches2,ratio2 = self.evaluate(received_map,cc_x_approx+x,cc_y_approx+y)
                 print(ratio,ratio2,x,y)
                 if (ratio2>ratio):
                    print("recursion")
-                   self.mergeApproximateMaps(received_map,cc_x_error+x,cc_y_error+y)
+                   self.mergeApproximateMaps(received_map,(cc_x_approx+x,cc_y_approx+y))
                    return True
-        self.mergeMaps(received_map,(cc_x_error,cc_y_error))
+        self.mergeMaps(received_map,(cc_x_approx,cc_y_approx))
 
     def mergeMaps(self, received_map, cc_center): # cc for centered coordinates of the emitting robot
         cc_x, cc_y = cc_center
