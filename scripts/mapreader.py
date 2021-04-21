@@ -24,5 +24,3 @@ def viz_map(map_mx):
 
 def viz_map_subp(map_mx, ax):
     ax.imshow(indexing(map_mx), cmap=ATLAS_COLORS, norm=ATLAS_NORM)
-
-print("Hello")    

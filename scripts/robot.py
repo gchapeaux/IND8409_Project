@@ -20,9 +20,8 @@ class Robot:
         
 
     def move(self, possible_directions):
+        if possible_directions == []:
+            return None
         dir = rd.choice(possible_directions)
         self.dynamicMap.shift(dir)
         return dir
-
-
-print("Hello")
