@@ -5,7 +5,7 @@ from matplotlib.colors import ListedColormap, BoundaryNorm
 ATLAS_INDEXES = {'' : 0, '@' : 1, '.' : 2, 'T' : 3, 'W' : 4, 'S' : 5}
 indexing = np.vectorize(lambda s : ATLAS_INDEXES[s])
 
-color_list = [(0.0,0.0,0.0), (0.05,0.05,0.05), (0.5,0.5,0.5), (0.0,0.3,0.0), (0.0,0.0,1.0),(0.2,0.2,1.0)]
+color_list = [(0.0,0.0,0.0), (0.3,0.3,0.3), (0.5,0.5,0.5), (0.0,0.3,0.0), (0.0,0.0,1.0),(0.2,0.2,1.0)]
 ATLAS_COLORS = ListedColormap(color_list, name='colors', N=256)
 ATLAS_NORM = BoundaryNorm([0,1,2,3,4,5], 5)
 

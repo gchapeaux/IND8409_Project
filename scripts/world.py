@@ -31,10 +31,11 @@ class World:
             self.coords[key] = ca_robot
 
 
-    def step(self):
+    def step(self, axes):
         for robot in self.robots.values():
-            self.moving(robot)
-        self.visualize()
+            self.__moving(robot)
+            #self.__sense(robot)
+        self.__visualize(axes)
 
 
     '''
@@ -47,7 +48,7 @@ class World:
     
     '''        
     
-    def moving(self, robot):
+    def __moving(self, robot):
         possible_directions = []
         xa_robot, ya_robot = self.coords[robot.id]
 
@@ -74,6 +75,8 @@ class World:
             ya_robot = ya_robot - 1
             self.coords[robot.id] = (xa_robot, ya_robot)
     
+    def __sense(self, robot):
+        xa_robot, ya_robot = self.coords[robot.id]
         sensors = np.zeros((3,3), dtype=str)
         for i in range(3):
                 for j in range(3):
@@ -82,12 +85,20 @@ class World:
         
         self.robots[robot.id].sense_world(sensors)
 
-    def communicate(self):
+    def sense2
+    
+    def __communicate(self):
         print("Pouet")
 
-    def visualize(self, radius = 50):
-        fig, axes = plt.subplots(2,3)
-        for l in [0,1]:
-            for c in [0,1,2]:
-                viz_map_subp(self.robots[l*c].dynamicMap.map_extract(radius), axes[l][c])
-        plt.show()
+    def __visualize(self, axes, radius = 50):
+        plots = {
+            1 : (0,0),
+            2 : (0,1),
+            3 : (0,2),
+            4 : (1,0),
+            5 : (1,1),
+            6 : (1,2)
+        }
+        for plot in plots.items():
+            viz_map_subp(self.robots[plot.key()].dynamicMap.map_extract(radius), axes[l][c])
+        plt.draw()
