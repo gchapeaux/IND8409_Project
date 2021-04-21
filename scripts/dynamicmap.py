@@ -12,9 +12,10 @@ class DynamicMap:
     def __init__(self, array=None):
         if array is None:
             self.map = np.empty(shape=(3,3), dtype=str)
+            self.RADIUS = 1
         else:
             self.map = np.array(array, dtype=str)
-        self.RADIUS = 1
+        
 
     __c2a = lambda self, rc : rc+self.RADIUS # Centered to absolute coordinate
     __a2c = lambda self, ac : ac-self.RADIUS # Absolute to centered coordinate
@@ -76,14 +77,7 @@ class DynamicMap:
             self.reshape(max(abs(cc_x), abs(cc_y))+received_map.RADIUS)
         self.__putMap(received_map, cc_x, cc_y)
 
-    '''
-    def mergeMaps(self, received_map, cc_center): # cc for centered coordinates of the emitting robot
-            cc_x, cc_y = cc_center[0],
-            newRadius = max(cc_x,cc_y) + self.RADIUS + received_map.RADIUS
-            self.reshape(newRadius)
-            for i in range(-received_map.RADIUS,received_map.RADIUS):
-                for j in range(-received_map.RADIUS,received_map.RADIUS):
-                    if()
-    '''
-print("test")
-print("Hello")
+    def map_extract(self, radius):
+        if radius >= self.RADIUS:
+            return self.map
+        return self.map[self.__c2a(-radius) : self.__c2a(radius) + 1, self.__c2a(-radius) : self.__c2a(radius) + 1]
