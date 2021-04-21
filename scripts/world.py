@@ -20,7 +20,7 @@ class World:
         while rid < n_robots:
             self.robots[rid] = Robot(rid)
             rid = rid+1
-        
+
         # coords : dict containing robot coordinates
         self.coords = {}
         for key in self.robots.keys():
@@ -41,14 +41,14 @@ class World:
 
     '''
 
-        | y-1   y   y+1  
-    ----|-------------    
+        | y-1   y   y+1
+    ----|-------------
     x-1 |       N
      x  |  W   [R]   E
-    x+1 |       S 
-    
-    '''        
-    
+    x+1 |       S
+
+    '''
+
     def __moving(self, robot):
         possible_directions = []
         xa_robot, ya_robot = self.coords[robot.id]
@@ -62,7 +62,7 @@ class World:
         if ya_robot > 0 and not(self.occupationMap[(xa_robot, ya_robot - 1)]):
             possible_directions.append(Dir.WEST)
         move = self.robots[robot.id].move(possible_directions)
-        
+
         if dir == Dir.NORTH:
             self.coords[robot.id] = (xa_robot - 1, ya_robot)
         elif dir == Dir.EAST:
@@ -79,7 +79,7 @@ class World:
                 for j in range(3):
                     if (xa_robot-1+i >=0 and xa_robot-1+i < self.worldMap.shape[0] and ya_robot-1+j >=0 and ya_robot-1+j < self.worldMap.shape[1]):
                         sensors[i,j] = self.worldMap[xa_robot-1+i, ya_robot-1+j]
-        
+
         self.robots[robot.id].sense_world(sensors)
 
     def __sense2(self, robot, rad_sensor=5) :
@@ -92,7 +92,16 @@ class World:
         
         self.robots[robot.id].sense_world(sensors)
     
+    def __distManhatan(coords1,coords2):
+        return abs(coords1[0]-coords2[0])+abs(coords1[1]-coords2[1])
+
     def __communicate(self):
+        for key1 in self.coords.keys():
+            for key2 in  self.coords.keys():
+                if key1 != key2:
+                    if distManhatan(self.coords[key1],self.coords[key2])<7:
+                        print("MErge ",key1," with ",key2)
+                        self.robots[key1].mergeMaps(self.robots[key2].map,self.coords[key2])
         print("Pouet")
 
     def __visualize(self, axes, radius = 50):
