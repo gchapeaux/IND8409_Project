@@ -49,8 +49,6 @@ def main(HEADLESS=True, SAVING=True):
         for robot in world.robots.values():
             comp.append(robot.exploration_history[-1]/map_size)
         if np.max(comp) > 0.9:
-            print(comp)
-            print(len(comp))
             escape = True
 
         i += 1
