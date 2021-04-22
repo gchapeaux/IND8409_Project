@@ -18,7 +18,7 @@ def read_map(path_to_map):
         map_mx.append(map_line)
     return np.array(map_mx)
 
-def viz_map(map_mx, fig_name=None, save_path = None):
+def viz_map(map_mx, fig_name=None, save_path = None, show=True):
     fig, ax = plt.subplots()
     plt.imshow(indexing(map_mx), cmap=ATLAS_COLORS, norm=ATLAS_NORM)
     ax.set_axis_off()
@@ -26,7 +26,9 @@ def viz_map(map_mx, fig_name=None, save_path = None):
         fig.suptitle(fig_name)
     if not(save_path is None):
         plt.savefig(save_path)
-    plt.show()
+    if show:
+        plt.show()
+    plt.close(fig)
 
 def viz_map_robot(robot, ax, radius):
     map_mx = robot.dynamicMap.map_extract(radius)
