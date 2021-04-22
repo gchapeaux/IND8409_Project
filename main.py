@@ -18,13 +18,13 @@ output_path = './output'
 
 run_dict = { 0 : '|', 1 : '/', 2 : '-', 3 : '\\', 4 : '|', 5 : '/', 6 : '-', 7 : '\\' }
 
-def main(HEADLESS=True, SAVING=True):
+def main(HEADLESS=False, SAVING=False):
 
     gc.enable()
     escape = False
     i=0
 
-    world = World('data/battleground.map', n_robots=75, spawn_radius=30)
+    world = World('data/battleground.map', n_robots=10, spawn_radius=30)
 
     print("| World generated, entering simulation")
     map_size = np.sum(world.worldMap != '@')
