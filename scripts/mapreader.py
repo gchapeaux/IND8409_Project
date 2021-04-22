@@ -18,8 +18,14 @@ def read_map(path_to_map):
         map_mx.append(map_line)
     return np.array(map_mx)
 
-def viz_map(map_mx):
+def viz_map(map_mx, fig_name=None, save_path = None):
+    fig, ax = plt.subplots()
     plt.imshow(indexing(map_mx), cmap=ATLAS_COLORS, norm=ATLAS_NORM)
+    ax.set_axis_off()
+    if not(fig_name is None):
+        fig.suptitle(fig_name)
+    if not(save_path is None):
+        plt.savefig(save_path)
     plt.show()
 
 def viz_map_robot(robot, ax, radius):

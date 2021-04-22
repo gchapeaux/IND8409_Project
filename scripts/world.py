@@ -31,13 +31,13 @@ class World:
             self.coords[key] = ca_robot
 
 
-    def step(self, axes, headless):
+    def step(self, fig, axes, headless, i):
         for robot in self.robots.values():
             self.__moving(robot)
             self.__sense(robot)
         self.__communicate()
         if not(headless):
-            self.__visualize(axes)
+            self.__visualize(fig, axes, i)
 
 
     '''
@@ -75,13 +75,9 @@ class World:
 
     def __sense(self, robot, rad_sensor=5) :
         xa_robot, ya_robot = self.coords[robot.id]
-        sensors = np.zeros((rad_sensor * 2 + 1,rad_sensor * 2 + 1), dtype=str)
-        for i in range(rad_sensor * 2 + 1):
-                for j in range(rad_sensor * 2 + 1):
-                    if (xa_robot - rad_sensor + i >= 0 and xa_robot - rad_sensor+i < self.worldMap.shape[0] and ya_robot - rad_sensor + j >= 0 and ya_robot-rad_sensor + j < self.worldMap.shape[1]):
-                        sensors[i,j] = self.worldMap[xa_robot - rad_sensor + i, ya_robot - rad_sensor + j]
-        
+        sensors = self.worldMap[xa_robot-rad_sensor : xa_robot+rad_sensor+1, ya_robot-rad_sensor : ya_robot+rad_sensor+1]
         self.robots[robot.id].sense_world(sensors)
+        self.robots[robot.id].write_history()
     
     def __distManhatan(self, coords1,coords2):
         return abs(coords1[0]-coords2[0])+abs(coords1[1]-coords2[1])
@@ -95,7 +91,7 @@ class World:
                         cc_robot2 = tuple(i-j for (i,j) in zip(self.coords[key2], self.coords[key1]))
                         self.robots[key1].mergeMaps(self.robots[key2].dynamicMap, cc_robot2)
 
-    def __visualize(self, axes, radius = 10):
+    def __visualize(self, fig, axes, i, radius = 10):
         plots = {
             0 : (0,0),
             1 : (0,1),
@@ -104,6 +100,8 @@ class World:
             4 : (1,1),
             5 : (1,2)
         }
+        fig.suptitle('Iteration '+str(i))
         for plot in plots.items():
             viz_map_robot(self.robots[plot[0]], axes[plot[1]], radius)
         plt.draw()
+        plt.pause(1e-3)

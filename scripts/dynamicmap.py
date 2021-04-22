@@ -108,3 +108,8 @@ class DynamicMap:
         if radius >= self.RADIUS:
             return map_extract
         return map_extract[self.__c2a(-radius) : self.__c2a(radius) + 1, self.__c2a(-radius) : self.__c2a(radius) + 1]
+
+    def map_opti(self):
+        if self.RADIUS > 1 and np.all(self.map[-1] == '') and np.all(self.map[0] == '') and np.all(self.map[:,0] == '') and np.all(self.map[:,-1] == ''):
+            self.reshape(self.RADIUS-1)
+            self.map_opti()
