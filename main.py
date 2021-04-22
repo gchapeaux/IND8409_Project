@@ -24,7 +24,7 @@ def main(HEADLESS=True, SAVING=True):
     escape = False
     i=0
 
-    world = World('data/battleground.map', n_robots=50, spawn_radius=20)
+    world = World('data/battleground.map', n_robots=2, spawn_radius=20)
 
     print("| World generated, entering simulation")
     map_size = np.sum(world.worldMap != '@')
@@ -75,7 +75,7 @@ def main(HEADLESS=True, SAVING=True):
             color = np.random.rand(3)/2.0
             plt.plot(hist, color=color)
         if (len(completion) <= 15):
-            plt.legend(labels=completion.keys(), ncol=len(completion)//5)
+            plt.legend(labels=completion.keys(), ncol=max(1,len(completion)//5))
         plt.suptitle('Completion of the maps over time')
         plt.savefig(os.path.join(output_path, 'completion.png'))
         if not(HEADLESS):
