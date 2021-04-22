@@ -36,7 +36,7 @@ def main(HEADLESS=True, SAVING=True):
             for ax in row:
                 ax.set_axis_off()
 
-    while not(escape) and (HEADLESS or plt.get_fignums()):
+    while not(escape) and (HEADLESS or plt.get_fignums()) and i < 3000:
         try:
             escape = keyboard.is_pressed("shift+esc")
         except:
@@ -48,8 +48,6 @@ def main(HEADLESS=True, SAVING=True):
         comp = []
         for robot in world.robots.values():
             comp.append(robot.exploration_history[-1]/map_size)
-        if np.max(comp) > 0.9:
-            escape = True
 
         i += 1
     
