@@ -42,7 +42,7 @@ def main(HEADLESS=True, SAVING=True):
         except:
             escape = False
         if (i%10 == 0):
-            print('| Simulation running, press ALT+ESCAPE to end - Step {} |{}|'.format(i, run_dict[(i//10)%8]), end='\r')
+            print('| Simulation running, press SHIFT+ESCAPE to end - Step {} |{}|'.format(i, run_dict[(i//10)%8]), end='\r')
         world.step(fig, axes, HEADLESS, i)
 
         comp = []
