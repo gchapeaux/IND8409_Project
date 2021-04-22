@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scripts.robot import Robot
-from scripts.mapreader import read_map, viz_map, viz_map_robot
+from scripts.mapreader import read_map, viz_map, viz_map_robot, viz_map_world
 from scripts.dynamicmap import Dir
 
 class World:
@@ -31,13 +31,13 @@ class World:
             self.coords[key] = ca_robot
 
 
-    def step(self, fig, axes, headless, i):
+    def step(self, fig, axes, wax, headless, i):
         for robot in self.robots.values():
             self.__moving(robot)
             self.__sense(robot)
         self.__communicate()
         if not(headless):
-            self.__visualize(fig, axes, i)
+            self.__visualize(fig, axes, wax, i)
 
 
     '''
@@ -91,7 +91,7 @@ class World:
                         cc_robot2 = tuple(i-j for (i,j) in zip(self.coords[key2], self.coords[key1]))
                         self.robots[key1].mergeMaps(self.robots[key2].dynamicMap, cc_robot2)
 
-    def __visualize(self, fig, axes, i, radius = 10):
+    def __visualize(self, fig, axes, wax, i, radius = 25):
         plots = {
             0 : (0,0),
             1 : (0,1),
@@ -103,5 +103,11 @@ class World:
         fig.suptitle('Iteration '+str(i))
         for plot in plots.items():
             viz_map_robot(self.robots[plot[0]], axes[plot[1]], radius)
+
+        wmap = self.worldMap.copy()
+        for coord in self.coords.values():
+            cx, cy = coord
+            wmap[cx-3:cx+3, cy-3:cy+3] = 'F'
+        viz_map_world(wmap, wax)
         plt.draw()
         plt.pause(1e-3)

@@ -24,12 +24,20 @@ def main(HEADLESS=True, SAVING=True):
     escape = False
     i=0
 
-    world = World('data/battleground.map', n_robots=2, spawn_radius=20)
+    world = World('data/battleground.map', n_robots=75, spawn_radius=30)
 
     print("| World generated, entering simulation")
     map_size = np.sum(world.worldMap != '@')
 
-    fig, axes = plt.subplots(2,3)
+    fig, axes = plt.subplots(2,6, figsize=(1,3))
+    gs = axes[0,3].get_gridspec()
+    for row in axes:
+        for ax in row[3:]:
+            ax.remove()
+    worldax = plt.subplot(gs[:,3:])
+    worldax.set_axis_off()
+    fig.tight_layout()
+
     if not(HEADLESS):
         plt.ion()
         for row in axes:
@@ -43,7 +51,7 @@ def main(HEADLESS=True, SAVING=True):
             escape = False
         if (i%10 == 0):
             print('| Simulation running, press SHIFT+ESCAPE to end - Step {} |{}|'.format(i, run_dict[(i//10)%8]), end='\r')
-        world.step(fig, axes, HEADLESS, i)
+        world.step(fig, axes, worldax, HEADLESS, i)
 
         comp = []
         for robot in world.robots.values():
